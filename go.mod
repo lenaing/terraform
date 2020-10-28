@@ -38,7 +38,7 @@ require (
 	github.com/gofrs/uuid v3.3.0+incompatible // indirect
 	github.com/golang/groupcache v0.0.0-20180513044358-24b0969c4cb7 // indirect
 	github.com/golang/mock v1.3.1
-	github.com/golang/protobuf v1.3.4
+	github.com/golang/protobuf v1.4.1
 	github.com/google/go-cmp v0.5.2
 	github.com/google/uuid v1.1.1
 	github.com/gophercloud/gophercloud v0.10.1-0.20200424014253-c3bfe50899e5
@@ -132,6 +132,7 @@ require (
 	golang.org/x/tools v0.0.0-20191203134012-c197fd4bf371
 	google.golang.org/api v0.9.0
 	google.golang.org/grpc v1.27.1
+	google.golang.org/protobuf v1.25.0
 	gopkg.in/ini.v1 v1.42.0 // indirect
 	gopkg.in/yaml.v2 v2.2.8
 	k8s.io/api v0.0.0-20190620084959-7cf5895f2711
