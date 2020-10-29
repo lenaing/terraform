@@ -421,6 +421,21 @@ func (m *Meta) contextOpts() (*terraform.ContextOpts, error) {
 		}
 		opts.Providers = providerFactories
 		opts.Provisioners = m.provisionerFactories()
+
+		// If any dev overrides or unmanaged providers are in place, we cannot
+		// verify the locks as we have incomplete version information
+		if len(m.UnmanagedProviders) == 0 && len(m.ProviderDevOverrides) == 0 {
+			// Read the dependency locks so that they can be verified against the
+			// provider requirements in the configuration
+			lockedDependencies, diags := m.lockedDependencies()
+
+			// If the locks file is invalid, we should fail early rather than
+			// ignore it. A missing locks file will return no error.
+			if diags.HasErrors() {
+				return nil, diags.Err()
+			}
+			opts.LockedDependencies = lockedDependencies
+		}
 	}
 
 	opts.ProviderSHA256s = m.providerPluginsLock().Read()
