@@ -297,7 +297,11 @@ func (ctx *BuiltinEvalContext) EvaluationScope(self addrs.Referenceable, keyData
 		InstanceKeyData: keyData,
 		Operation:       ctx.Evaluator.Operation,
 	}
-	return ctx.Evaluator.Scope(data, self)
+	scope := ctx.Evaluator.Scope(data, self)
+	if mc := ctx.Evaluator.Config.DescendentForInstance(ctx.PathValue); mc != nil {
+		scope.SetActiveExperiments(mc.Module.ActiveExperiments)
+	}
+	return scope
 }
 
 func (ctx *BuiltinEvalContext) Path() addrs.ModuleInstance {
