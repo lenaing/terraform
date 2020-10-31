@@ -8,6 +8,7 @@ import (
 
 	"github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/hclsyntax"
+	"github.com/hashicorp/terraform/experiments"
 	homedir "github.com/mitchellh/go-homedir"
 	"github.com/zclconf/go-cty/cty"
 )
@@ -285,6 +286,18 @@ func TestFunctions(t *testing.T) {
 						"b": cty.StringVal("5"),
 						"c": cty.StringVal("6"),
 					}),
+				}),
+			},
+		},
+
+		"defaults": {
+			// This function is pretty specialized and so this is mainly
+			// just a test that it is defined at all. See the function's
+			// own unit tests for more interesting test cases.
+			{
+				`defaults({a: 4}, {a: 5})`,
+				cty.ObjectVal(map[string]cty.Value{
+					"a": cty.NumberIntVal(4),
 				}),
 			},
 		},
@@ -1052,6 +1065,12 @@ func TestFunctions(t *testing.T) {
 		Data:    data,
 		BaseDir: "./testdata/functions-test", // for the functions that read from the filesystem
 	}
+	// We may need to activate some experiments if some of our functions
+	// are currently experimental. This set should be empty if there are no
+	// active experiments involving functions.
+	experimentsSet := experiments.NewSet()
+	experimentsSet.Add(experiments.ModuleVariableOptionalAttrs) // for the experimental "default" function
+	scope.SetActiveExperiments(experimentsSet)
 
 	// Check that there is at least one test case for each function, omitting
 	// those functions that do not return consistent values
