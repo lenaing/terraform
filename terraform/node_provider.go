@@ -108,8 +108,20 @@ func (n *NodeApplyableProvider) ConfigureProvider(ctx EvalContext, provider prov
 		return diags
 	}
 
-	configDiags := ctx.ConfigureProvider(n.Addr, configVal)
-	configDiags = configDiags.InConfigBody(configBody)
+	// Allow the provider to validate and insert any defaults into the full
+	// configuration.
+	req := providers.PrepareProviderConfigRequest{
+		Config: configVal,
+	}
 
-	return configDiags
+	prepareResp := provider.PrepareProviderConfig(req)
+	diags = diags.Append(prepareResp.Diagnostics)
+	if diags.HasErrors() {
+		return diags
+	}
+
+	configDiags := ctx.ConfigureProvider(n.Addr, prepareResp.PreparedConfig)
+	diags = diags.Append(configDiags.InConfigBody(configBody))
+
+	return diags
 }
