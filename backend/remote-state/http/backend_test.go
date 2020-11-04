@@ -110,6 +110,7 @@ func TestHTTPClientFactoryWithEnv(t *testing.T) {
 		"unlock_method":      "BLOOP",
 		"workspaces_address": "http://127.0.0.1:8888/qux",
 		"workspaces_method":  "BLUUP",
+		"workspaces":         "false",
 		"username":           "user",
 		"password":           "pass",
 		"retry_max":          "999",
@@ -125,6 +126,7 @@ func TestHTTPClientFactoryWithEnv(t *testing.T) {
 	defer testWithEnv(t, "TF_HTTP_LOCK_METHOD", conf["lock_method"])()
 	defer testWithEnv(t, "TF_HTTP_UNLOCK_METHOD", conf["unlock_method"])()
 	defer testWithEnv(t, "TF_HTTP_WORKSPACES_METHOD", conf["workspaces_method"])()
+	defer testWithEnv(t, "TF_HTTP_WORKSPACES", conf["workspaces"])()
 	defer testWithEnv(t, "TF_HTTP_USERNAME", conf["username"])()
 	defer testWithEnv(t, "TF_HTTP_PASSWORD", conf["password"])()
 	defer testWithEnv(t, "TF_HTTP_RETRY_MAX", conf["retry_max"])()

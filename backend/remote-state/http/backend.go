@@ -67,6 +67,12 @@ func New() backend.Backend {
 				DefaultFunc: schema.EnvDefaultFunc("TF_HTTP_WORKSPACES_METHOD", "OPTIONS"),
 				Description: "The HTTP method to use when listing workspaces",
 			},
+			"workspaces": &schema.Schema{
+				Type:        schema.TypeBool,
+				Optional:    true,
+				DefaultFunc: schema.EnvDefaultFunc("TF_HTTP_WORKSPACES", false),
+				Description: "Wether to enable workspaces use on REST endpoint",
+			},
 			"username": &schema.Schema{
 				Type:        schema.TypeString,
 				Optional:    true,
@@ -172,6 +178,13 @@ func (b *Backend) configure(ctx context.Context) error {
 	}
 
 	workspacesMethod := data.Get("workspaces_method").(string)
+
+	if data.Get("workspaces").(bool) {
+		// Use default address if no workspaces_address is provided
+		if workspacesURL == nil {
+			workspacesURL = updateURL
+		}
+	}
 
 	client := cleanhttp.DefaultPooledClient()
 
